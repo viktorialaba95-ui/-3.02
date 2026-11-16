@@ -1,0 +1,724 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>НМТ Історія України: Русь-Україна (hist.viktoria)</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700;800;900&display=swap">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+  <style>
+    body {
+      font-family: 'Montserrat', sans-serif;
+      background-color: #f3e9d2;
+      background-image: 
+        radial-gradient(#d5b982 1.2px, transparent 1.2px),
+        radial-gradient(#8b261d 1.2px, #f3e9d2 1.2px);
+      background-size: 48px 48px;
+      background-position: 0 0, 24px 24px;
+      color: #2b1d14;
+    }
+
+    /* Текстура пергаменту для головної картки */
+    .parchment-card {
+      background: linear-gradient(180deg, #fffdf8 0%, #fbf5e6 100%);
+      box-shadow: 0 20px 40px -15px rgba(59, 25, 16, 0.25), 0 0 0 1px rgba(197, 155, 68, 0.4);
+    }
+
+    /* Княжий орнамент (бордюр) */
+    .rus-ornament {
+      height: 10px;
+      background-color: #7c2219;
+      background-image: repeating-linear-gradient(
+        45deg,
+        #d4a338 0,
+        #d4a338 6px,
+        transparent 6px,
+        transparent 12px
+      ),
+      repeating-linear-gradient(
+        -45deg,
+        #d4a338 0,
+        #d4a338 6px,
+        transparent 6px,
+        transparent 12px
+      );
+      border-top: 2px solid #c59227;
+      border-bottom: 2px solid #c59227;
+    }
+
+    /* Стилізація скролбару */
+    ::-webkit-scrollbar {
+      width: 6px;
+      height: 6px;
+    }
+    ::-webkit-scrollbar-track {
+      background: #eee2c8;
+      border-radius: 8px;
+    }
+    ::-webkit-scrollbar-thumb {
+      background: #9e7328;
+      border-radius: 8px;
+    }
+  </style>
+</head>
+<body class="min-h-screen flex flex-col justify-between p-3 sm:p-6 md:p-8">
+
+  <!-- Головний сувій / Контейнер -->
+  <div class="max-w-3xl w-full mx-auto parchment-card rounded-3xl border-[3px] border-[#7c2219] overflow-hidden transition-all">
+    
+    <!-- Верхній княжий орнамент -->
+    <div class="rus-ornament"></div>
+
+    <div class="p-5 sm:p-8">
+      <!-- Шапка / Брендинг -->
+      <header class="flex flex-wrap items-center justify-between border-b-2 border-[#e3d2b0] pb-4 mb-5 gap-3">
+        <div class="flex items-center gap-2.5 bg-[#7c2219] text-[#fdf7ea] px-4 py-1.5 rounded-full border border-[#d4a338] shadow-sm">
+          <i class="fa-brands fa-instagram text-[#f2c45a]"></i>
+          <span class="text-sm font-extrabold tracking-wide">hist.viktoria</span>
+        </div>
+        <div class="flex items-center gap-2">
+          <span class="text-xs font-black uppercase text-[#7c2219] tracking-widest flex items-center gap-1.5">
+            <i class="fa-solid fa-crown text-[#c59227]"></i> Програма НМТ
+          </span>
+          <span class="text-[#c59227]">•</span>
+          <span class="bg-[#efe2c4] text-[#4a2810] border border-[#d4b67d] text-xs font-bold px-2.5 py-1 rounded-lg">Русь-Україна (20 тестів)</span>
+        </div>
+      </header>
+
+      <!-- Панель навігації по питаннях (можна клікати і повертатися) -->
+      <div id="nav-wrapper" class="mb-5">
+        <div class="flex items-center justify-between text-xs font-bold text-[#6e5038] mb-2">
+          <span id="question-counter" class="text-sm font-extrabold text-[#4a2810]">Запитання 1 з 20</span>
+          <span id="answered-counter" class="bg-[#f3e6ca] text-[#7c2219] px-2.5 py-1 rounded-md border border-[#dcc28e]">Відповідей: 0 / 20</span>
+        </div>
+        
+        <!-- Інтерактивні квадратики-навігатори (20 шт: 5x4 на мобільному, 10x2 на комп'ютері) -->
+        <div id="question-dots" class="grid grid-cols-5 sm:grid-cols-10 gap-1.5 mb-3">
+          <!-- Генерується через JS -->
+        </div>
+
+        <!-- Прогрес-бар -->
+        <div class="w-full bg-[#e8d9bc] rounded-full h-2 overflow-hidden border border-[#d5be92]">
+          <div id="progress-bar" class="bg-gradient-to-r from-[#7c2219] to-[#d4a338] h-full rounded-full transition-all duration-300" style="width: 5%"></div>
+        </div>
+      </div>
+
+      <!-- Область тесту -->
+      <main id="quiz-area">
+        <!-- Категорія і Текст запитання -->
+        <div class="mb-6 bg-[#f9f1df] p-4 sm:p-5 rounded-2xl border border-[#e0cba3] relative">
+          <div class="flex items-center justify-between gap-2 mb-2">
+            <span id="question-type" class="inline-flex items-center gap-1.5 text-xs font-extrabold text-[#7c2219] bg-[#f1dfb9] border border-[#d6b572] px-3 py-1 rounded-md uppercase tracking-wider">
+              <i class="fa-solid fa-scroll text-[#a6761e]"></i>
+              <span>Завантаження...</span>
+            </span>
+          </div>
+          <h2 id="question-text" class="text-base sm:text-xl font-bold text-[#2b1d14] leading-relaxed">
+            Завантаження запитання...
+          </h2>
+        </div>
+
+        <!-- Варіанти відповідей -->
+        <div id="options-container" class="space-y-3 mb-6">
+          <!-- Кнопки варіантів генеруються через JS -->
+        </div>
+
+        <!-- Блок пояснення (з'являється після вибору варіанту) -->
+        <div id="feedback-box" class="hidden p-4 rounded-2xl mb-6 border-2 transition-all">
+          <div class="flex items-center gap-2 mb-1.5">
+            <i id="feedback-icon" class="fa-solid text-lg"></i>
+            <h4 id="feedback-title" class="font-extrabold text-sm uppercase tracking-wide"></h4>
+          </div>
+          <p id="feedback-text" class="text-sm leading-relaxed font-medium text-[#2b1d14]"></p>
+        </div>
+
+        <!-- Кнопки навігації: Назад / Завершити / Далі -->
+        <div class="flex flex-wrap items-center justify-between gap-3 pt-2 border-t border-[#e5d5b5]">
+          <button id="prev-btn" class="bg-[#efe2c4] hover:bg-[#e3d0a6] disabled:opacity-40 disabled:pointer-events-none text-[#4a2810] border border-[#c9ab70] font-extrabold text-xs sm:text-sm uppercase px-4 sm:px-5 py-3 rounded-xl transition duration-200 flex items-center gap-2">
+            <i class="fa-solid fa-arrow-left"></i>
+            <span>Назад</span>
+          </button>
+
+          <button id="finish-early-btn" class="hidden text-xs font-bold text-[#7c2219] hover:underline px-2 py-1">
+            Завершити та переглянути підсумок
+          </button>
+
+          <button id="next-btn" class="bg-[#7c2219] hover:bg-[#5e1811] text-[#fdf7ea] border border-[#d4a338] font-extrabold text-xs sm:text-sm uppercase px-5 sm:px-6 py-3 rounded-xl transition duration-200 flex items-center gap-2 shadow-md ml-auto">
+            <span id="next-btn-text">Наступне</span>
+            <i id="next-btn-icon" class="fa-solid fa-arrow-right text-[#f2c45a]"></i>
+          </button>
+        </div>
+      </main>
+
+      <!-- Фінальний екран результату з ПОВНИМ РОЗБОРОМ усіх 20 питань -->
+      <div id="result-screen" class="hidden">
+        <!-- Підсумкова картка -->
+        <div class="text-center bg-[#f9f1df] border-2 border-[#d4a338] rounded-2xl p-6 mb-6 relative overflow-hidden">
+          <div class="w-16 h-16 bg-[#7c2219] text-[#f2c45a] rounded-full flex items-center justify-center mx-auto mb-3 border-2 border-[#d4a338] shadow-md">
+            <i class="fa-solid fa-crown text-2xl"></i>
+          </div>
+          <h3 class="text-xl sm:text-2xl font-black text-[#7c2219] uppercase mb-2">Літопис проходження</h3>
+          <p id="final-score-text" class="text-sm sm:text-base text-[#4a2810] font-semibold mb-4"></p>
+          
+          <!-- Міні-статистика -->
+          <div class="flex justify-center gap-4 text-xs sm:text-sm font-extrabold mb-5">
+            <span class="bg-[#e3f1e6] text-[#1f542d] border border-[#8ec49c] px-3.5 py-1.5 rounded-xl">
+              <i class="fa-solid fa-check mr-1"></i> Правильно: <span id="stat-correct">0</span>
+            </span>
+            <span class="bg-[#fae8e6] text-[#8c2318] border border-[#e09c94] px-3.5 py-1.5 rounded-xl">
+              <i class="fa-solid fa-xmark mr-1"></i> Помилки / Пропуски: <span id="stat-wrong">0</span>
+            </span>
+          </div>
+
+          <button id="restart-btn" class="bg-[#7c2219] hover:bg-[#5e1811] text-[#fdf7ea] border border-[#d4a338] font-black text-xs sm:text-sm uppercase px-7 py-3 rounded-xl transition shadow-md inline-flex items-center gap-2">
+            <i class="fa-solid fa-rotate-right text-[#f2c45a]"></i>
+            <span>Пройти тренажер ще раз</span>
+          </button>
+        </div>
+
+        <!-- Детальний розбір усіх 20 запитань -->
+        <div class="mb-3 flex items-center justify-between">
+          <h4 class="text-base sm:text-lg font-black text-[#4a2810] uppercase flex items-center gap-2">
+            <i class="fa-solid fa-book-open text-[#7c2219]"></i>
+            <span>Повний розбір усіх відповідей:</span>
+          </h4>
+        </div>
+
+        <div id="review-list" class="space-y-4">
+          <!-- Картки розбору кожного питання генеруються через JS -->
+        </div>
+
+        <div class="text-center mt-6 pt-4 border-t border-[#e3d2b0]">
+          <button onclick="restartQuiz()" class="bg-[#234732] hover:bg-[#183323] text-white font-extrabold text-xs sm:text-sm uppercase px-7 py-3 rounded-xl transition shadow-md inline-flex items-center gap-2">
+            <i class="fa-solid fa-rotate-right"></i>
+            <span>Спробувати знову</span>
+          </button>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- Нижній княжий орнамент -->
+    <div class="rus-ornament"></div>
+  </div>
+
+  <!-- Футер -->
+  <footer class="text-center text-xs font-bold text-[#5e442f] mt-5">
+    Тренажер підготовки до НМТ • Київська держава (Русь-Україна) • @hist.viktoria
+  </footer>
+
+  <script>
+    const questions = [
+      // --- БЛОК 1: ПОЛІТИЧНИЙ УСТРІЙ, СУСПІЛЬСТВО ТА ГОСПОДАРСТВО (7 питань) ---
+      {
+        type: "Політичний устрій",
+        question: "Яка особливість політичного устрою Київської держави свідчила про автономність удільних князівств?",
+        options: [
+          "Право на престол належало представникам різних знатних родів, а не лише Рюриковичам",
+          "Удільні князі самостійно розпоряджалися своїми землями, і намісники великого князя не могли втручатись у їхні внутрішні справи",
+          "Усі важливі рішення в уділах затверджувалися виключно на загальноруському вічі",
+          "Вищими посадовцями в усіх містах були призначені Києвом воєводи"
+        ],
+        correct: 1,
+        explanation: "Удільні князі мали широку автономію у своїх володіннях: вони самостійно розпоряджалися землями, а намісники київського князя не мали права втручатися у їхні внутрішні справи. Водночас право на престол належало винятково династії Рюриковичів."
+      },
+      {
+        type: "Соціальна структура",
+        question: "Яку соціальну категорію населення Київської держави становили ізгої?",
+        options: [
+          "Полонених рабів, які повністю належали своєму власникові",
+          "Привілейованих військових, які отримували землю за службу",
+          "Непривілейованих вільних людей, що втратили зв'язок зі звичним середовищем, але охоронялися законом",
+          "Залежних селян, які потрапили в рабство за несплачені борги"
+        ],
+        correct: 2,
+        explanation: "Ізгої належали до непривілейованого вільного населення. Це люди, які з різних причин випали зі свого звичного соціального стану (князі без князівства, смерди без землі тощо), проте вони охоронялися законом."
+      },
+      {
+        type: "Залежне населення",
+        question: "Чим відрізнялися закупи та рядовичі від холопів у соціальній структурі Русі-України?",
+        options: [
+          "Закупи й рядовичі не сплачували податків, а холопи сплачували подвійну данину",
+          "Закупи й рядовичі були тимчасово залежними селянами через борг або договір, а холопи ставали рабами за борги",
+          "Холопи належали до вільних міщан, а закупи — до військового стану",
+          "Закупи були рабами-полоненими, а холопи — вільними наймитами"
+        ],
+        correct: 1,
+        explanation: "Закупи та рядовичі — це залежні селяни, які заборгували землевласникові чи уклали з ним договір. Холопи ж були рабами, що потрапили в повну залежність за борги (на відміну від челяді — рабів-полонених)."
+      },
+      {
+        type: "Форми землеволодіння",
+        question: "Про який процес у суспільно-політичному житті свідчило формування вотчинного землеволодіння в XI–XII ст.?",
+        options: [
+          "Зміцнення централізованої влади великого київського князя",
+          "Перехід земель у повну та безумовну власність і послаблення великокнязівської влади",
+          "Повернення до системи тимчасового умовного тримання волостей",
+          "Ліквідацію приватної власності на землю на користь держави"
+        ],
+        correct: 1,
+        explanation: "Раніше великий князь надавав волості лише у тимчасову умовну власність, бо земля вважалася державною. Формування вотчини в XI–XII ст. означало повне й безумовне (спадкове) володіння землею та свідчило про послаблення великокнязівської влади."
+      },
+      {
+        type: "Податки і повинності",
+        question: "Що передбачала селянська повинність «повоз», яку відпрацьовували вільні селяни-смерди?",
+        options: [
+          "Сплату податку від кожного диму (господарства) хутром чи зерном",
+          "Надання коней і транспорту на потреби князя",
+          "Зведення оборонних укріплень навколо міст",
+          "Об'їзд князем із дружиною підлеглих племен для збору данини"
+        ],
+        correct: 1,
+        explanation: "Окрім податків з «диму» (господарства) та поземельного податку від плуга чи рала, смерди відпрацьовували повинності: «повоз» (надання коней і транспорту на потреби князя) та будівництво міст і укріплень."
+      },
+      {
+        type: "Грошовий обіг",
+        question: "Яке твердження правильно характеризує гривні та власні монети Київської держави?",
+        options: [
+          "Гривні були дрібними мідними монетами, а срібники й златники перебували в обігу понад два століття",
+          "Гривні використовували у гуртовій торгівлі й рубали для дрібних розрахунків, а срібники й златники карбували близько 30 років",
+          "Усі гривні мали однаковий стандарт ваги в усіх князівствах і виключно круглу форму",
+          "Гривнями називали римські денарії та арабські срібні диргеми"
+        ],
+        correct: 1,
+        explanation: "Гривні — срібні зливки найвищого ґатунку (різної форми й ваги залежно від князівства), які в гуртовій торгівлі використовували цілими, а для дрібних розрахунків рубали (звідси назва «рубль»). Карбування власних срібників і златників з кінця X ст. тривало близько 30 років, після чого припинилося, бо вони осідали як засіб накопичення."
+      },
+      {
+        type: "Зовнішня торгівля",
+        question: "Який напрямок мав Солоний торговельний шлях, що поєднував Київську державу із зовнішніми ринками?",
+        options: [
+          "Вів на північ до Балтійського моря та Скандинавії",
+          "Вів на захід до Польщі, Богемії та німецьких князівств",
+          "Вів до Криму, на Дон і Волгу",
+          "Вів через Кавказ до арабського Сходу та Багдада"
+        ],
+        correct: 2,
+        explanation: "Головними торговельними шляхами Русі були: «із варягів у греки» (Балтійське — Чорне моря), Залізний — до Кавказу та арабського Сходу, а Солоний — до Криму, на Дон і Волгу."
+      },
+
+      // --- БЛОК 2: КУЛЬТУРА КИЇВСЬКОЇ ДЕРЖАВИ (13 питань) ---
+      {
+        type: "Культура: Писемність",
+        question: "Яка доля спіткала дві системи письма — глаголицю та кирилицю — у Київській державі?",
+        options: [
+          "Глаголиця повністю витіснила кирилицю як зручніша для церковних книг",
+          "З часом зручніша кирилиця, створена на основі грецького алфавіту, витіснила глаголичне письмо",
+          "Кирилицю використовували виключно для світського листування, а глаголицю — для літописів",
+          "Обидві абетки були заборонені після прийняття християнства"
+        ],
+        correct: 1,
+        explanation: "На Русі використовували дві системи письма: глаголицю (схожу на ієрогліфічне письмо) і кирилицю, створену братами-проповідниками Кирилом і Мефодієм на основі грецького алфавіту. З часом зручніша кирилиця витіснила глаголицю."
+      },
+      {
+        type: "Культура: Освіта",
+        question: "Чим уславилася культурно-освітня діяльність Анни Всеволодівни (Янки) в середині XI ст.?",
+        options: [
+          "Заснуванням першої бібліотеки при Софійському соборі в Києві",
+          "Відкриттям при київському Андріївському монастирі школи для дівчаток, аналогів якої у Європі не було",
+          "Відкриттям першої школи в Києві за правління Володимира Великого",
+          "Запровадженням першого чернечого статуту в Києво-Печерському монастирі"
+        ],
+        correct: 1,
+        explanation: "Першу школу в Києві відкрив Володимир Великий, а в середині XI ст. Анна Всеволодівна (Янка), сестра Володимира Мономаха, відкрила при київському Андріївському монастирі першу в Європі школу для дівчаток."
+      },
+      {
+        type: "Культура: Церковне життя та медицина",
+        question: "Яке досягнення пов'язане з діяльністю Києво-Печерського монастиря та його подвижників у XI столітті?",
+        options: [
+          "Там було зібрано бібліотеку з понад 900 книг, засновану Ярославом Мудрим",
+          "Третій ігумен св. Феодосій уперше на Русі запровадив чернечий статут, а ченці Агапіт і Даміан стали першими відомими лікарями",
+          "Монастир став першим центром фігурної кам'яної скульптури на Русі",
+          "Саме в цьому монастирі Анна Всеволодівна відкрила школу для дівчаток"
+        ],
+        correct: 1,
+        explanation: "Засновником Києво-Печерського монастиря став св. Антоній Печерський за правління Ярослава Мудрого. У XI ст. третій ігумен св. Феодосій уперше на Русі запровадив чернечий статут, а перші відомі руські лікарі — Агапіт і Даміан — були його ченцями."
+      },
+      {
+        type: "Культура: Література",
+        question: "Яка провідна ідея була обґрунтована митрополитом Іларіоном у першому оригінальному художньому творі Русі — «Слові про закон і благодать»?",
+        options: [
+          "Необхідність припинення князівських усобиць перед загрозою половців",
+          "Ідея рівноправності Русі серед інших християнських держав та статус Києва як столиці",
+          "Опис життя святих та перших лікарів Києво-Печерського монастиря",
+          "Заклик до відновлення язичницьких традицій у культурі"
+        ],
+        correct: 1,
+        explanation: "У першому оригінальному художньому творі Київської держави — «Слові про закон і благодать» — митрополит Іларіон обґрунтував ідею рівноправності Русі серед інших християнських держав та визначив статус Києва як столиці."
+      },
+      {
+        type: "Культура: Книжкові пам'ятки",
+        question: "Яка пам'ятка писемності 1144 року вважається першою руською редакцією Нового Заповіту?",
+        options: [
+          "«Остромирове Євангеліє»",
+          "«Галицьке Євангеліє»",
+          "«Ізборник» Святослава Ярославича",
+          "«Києво-Печерський патерик»"
+        ],
+        correct: 1,
+        explanation: "Першою руською редакцією Нового Заповіту стало «Галицьке Євангеліє» (1144 р.). Натомість «Остромирове Євангеліє» (1056–1057 рр.) — найдавніша ілюстрована книга, що дійшла до нас, а «Ізборник» (1073 р.) — збірка фрагментів улюблених творів князя Святослава Ярославича."
+      },
+      {
+        type: "Культура: Патерики та епос",
+        question: "Який жанр давньоруської літератури представляє «Києво-Печерський патерик» (перша третина XIII ст.)?",
+        options: [
+          "Літописне зведення про походження слов'ян та перших князів",
+          "Збірку оповідань про життя святих",
+          "Героїчну поему про невдалий похід новгород-сіверського князя проти половців",
+          "Збірник державних законів і судових постанов"
+        ],
+        correct: 1,
+        explanation: "Патерики — це збірки оповідань про життя святих; найвизначнішим із них є «Києво-Печерський патерик» (перша третина XIII ст.). А похід проти половців описано в анонімному «Слові о полку Ігоревім» (близько 1187 р.)."
+      },
+      {
+        type: "Культура: Літописання",
+        question: "Яке твердження щодо літописання Київської держави є правильним?",
+        options: [
+          "«Літопис Аскольда» (друга половина IX ст.) дійшов до наших днів у кількох списках",
+          "1113 р. монах Києво-Печерського монастиря Нестор завершив «Повість минулих літ» — перший літопис, що дійшов до наших днів",
+          "«Повість минулих літ» була написана в Галичі за наказом князя Ярослава Осмомисла",
+          "Літописання на Русі виникло лише в XIII столітті"
+        ],
+        correct: 1,
+        explanation: "Першим історичним літописним твором припускають «Літопис Аскольда» (друга половина IX ст.), але його примірник не зберігся. У 1113 р. монах Нестор завершив «Повість минулих літ» — перший літопис, що дійшов до наших днів і зберігся у кількох списках."
+      },
+      {
+        type: "Культура: Архітектура (техніка)",
+        question: "Яка будівельна технологія та архітектурне планування набули поширення в кам'яному храмовому будівництві Русі з кінця X ст.?",
+        options: [
+          "Готичні стрілчасті склепіння та каркасні конструкції",
+          "Хрестово-купольне планування та кладка стін із рядів каменю, що чергуються з плінфою (пласкою цеглою)",
+          "Базилікальне планування без куполів та облицювання білим мармуром",
+          "Використання виключно тесаного вапняку без застосування цегли"
+        ],
+        correct: 1,
+        explanation: "У кам'яній архітектурі Русі поширилося хрестово-купольне планування соборів (склепіння з центральним куполом спиралися на чотири стовпи), а стіни викладали з рядів каменю, що чергувалися з плінфою — пласкою, майже квадратною цеглою."
+      },
+      {
+        type: "Культура: Архітектурні пам'ятки",
+        question: "Яка київська кам'яна церква була найпершою в Русі-Україні, проте не збереглася до наших днів?",
+        options: [
+          "Софійський собор",
+          "Церква Богородиці (Десятинна)",
+          "Михайлівський Золотоверхий собор",
+          "Успенський собор Печерського монастиря"
+        ],
+        correct: 1,
+        explanation: "Найперша кам'яна київська церква — Богородиці, або Десятинна — не збереглася. Софійський собор (XI ст.) зберігся оригінальним, а Михайлівський Золотоверхий та Успенський собори були зруйновані радянською владою у ХХ ст. та відбудовані на межі ХХ–ХХІ ст."
+      },
+      {
+        type: "Культура: Архітектура Чернігова",
+        question: "Які дві архітектурні пам'ятки доби Київської держави пережили століття та збереглися у Чернігові?",
+        options: [
+          "Десятинна церква та Золоті ворота",
+          "Спасо-Преображенський собор (XI ст.) та П'ятницька церква (XIII ст.)",
+          "Софійський собор (XI ст.) та Кирилівська церква (XII ст.)",
+          "Успенський собор (XI ст.) та Андріївська церква"
+        ],
+        correct: 1,
+        explanation: "Окрім київських пам'яток, пережили століття й кілька храмів у Чернігові — зокрема Спасо-Преображенський собор (XI ст.) та П'ятницька церква (XIII ст.)."
+      },
+      {
+        type: "Культура: Монументальний живопис",
+        question: "Яка особливість вирізняє знамениті мозаїки Богоматері Оранти та Христа Вседержителя в Софійському соборі Києва?",
+        options: [
+          "Вони виконані в стилі західноєвропейського бароко і налічують лише 12 кольорів",
+          "Вони створені за візантійським каноном і налічують 177 відтінків",
+          "Це єдині мозаїки Русі, створені у XIV столітті",
+          "Вони виконані на дерев'яних дошках технікою енкаустики"
+        ],
+        correct: 1,
+        explanation: "Монументальний живопис (фрески, мозаїка) розвивався за візантійським каноном. Відомими пам'ятками є мозаїки Богоматері Оранти та Христа Вседержителя Софійського собору в Києві, що налічують 177 відтінків."
+      },
+      {
+        type: "Культура: Образотворче мистецтво",
+        question: "Які зміни відбулися у видах образотворчого мистецтва Київської держави після прийняття християнства та в XII столітті?",
+        options: [
+          "Бурхливо розвивалася кругла фігурна скульптура, а іконопис був заборонений",
+          "Після прийняття християнства перервано традицію фігурної скульптури, а в XII ст. зникло мистецтво мозаїки",
+          "Фресковий розпис повністю замінили на вітражі",
+          "Книжкова мініатюра зникла в XI ст. через заборону ілюструвати церковні книги"
+        ],
+        correct: 1,
+        explanation: "Після прийняття християнства була штучно перервана традиція фігурної скульптури, забороненої візантійською церквою (допускалися лише рельєфи). А у XII ст. через дороговизну матеріалів зникло й мистецтво мозаїки."
+      },
+      {
+        type: "Культура: Іконопис та мініатюра",
+        question: "Яке твердження правильно пов'язує імена митців Київської держави з їхніми творами?",
+        options: [
+          "Диякон Григорій написав «Слово о полку Ігоревім», а митрополит Іларіон створив мозаїку Оранти",
+          "Диякон Григорій виготовив ілюстроване «Остромирове Євангеліє» (1056–1057), а іконописець Алімпій міг бути автором Вишгородської ікони Богоматері",
+          "Монах Нестор розписав фресками Спасо-Преображенський собор у Чернігові",
+          "Лікар Агапіт створив портрет родини князя Святослава в «Ізборнику» 1073 р."
+        ],
+        correct: 1,
+        explanation: "Найдавнішу ілюстровану книгу, що дійшла до нас — «Остромирове Євангеліє» (1056–1057) — виготовив диякон Григорій. Одними з перших руських іконописців вважають Григорія та Алімпія; припускають, що Алімпій працював над мозаїками Михайлівського Золотоверхого собору і міг бути автором Вишгородської ікони Богоматері (XII ст.)."
+      }
+    ];
+
+    // Зберігаємо вибір користувача для кожного питання (null — ще не відповідав)
+    let userAnswers = new Array(questions.length).fill(null);
+    let currentQuestionIndex = 0;
+
+    const questionCounter = document.getElementById("question-counter");
+    const answeredCounter = document.getElementById("answered-counter");
+    const questionDots = document.getElementById("question-dots");
+    const progressBar = document.getElementById("progress-bar");
+    const questionType = document.getElementById("question-type").querySelector("span");
+    const questionText = document.getElementById("question-text");
+    const optionsContainer = document.getElementById("options-container");
+    const feedbackBox = document.getElementById("feedback-box");
+    const feedbackTitle = document.getElementById("feedback-title");
+    const feedbackIcon = document.getElementById("feedback-icon");
+    const feedbackText = document.getElementById("feedback-text");
+    const prevBtn = document.getElementById("prev-btn");
+    const nextBtn = document.getElementById("next-btn");
+    const nextBtnText = document.getElementById("next-btn-text");
+    const nextBtnIcon = document.getElementById("next-btn-icon");
+    const finishEarlyBtn = document.getElementById("finish-early-btn");
+    const navWrapper = document.getElementById("nav-wrapper");
+    const quizArea = document.getElementById("quiz-area");
+    const resultScreen = document.getElementById("result-screen");
+    const finalScoreText = document.getElementById("final-score-text");
+    const statCorrect = document.getElementById("stat-correct");
+    const statWrong = document.getElementById("stat-wrong");
+    const reviewList = document.getElementById("review-list");
+    const restartBtn = document.getElementById("restart-btn");
+
+    // Оновлення навігаційних кнопок (1..20)
+    function renderNavigationDots() {
+      questionDots.innerHTML = "";
+      questions.forEach((q, idx) => {
+        const dot = document.createElement("button");
+        dot.textContent = idx + 1;
+        dot.title = `Перейти до питання ${idx + 1}`;
+        
+        let baseClass = "h-7 rounded-lg text-xs font-extrabold transition-all flex items-center justify-center border ";
+        const ans = userAnswers[idx];
+
+        if (ans === null) {
+          baseClass += "bg-[#f6ecd6] text-[#5e442f] border-[#d6be92] hover:border-[#7c2219] ";
+        } else if (ans === q.correct) {
+          baseClass += "bg-[#235c36] text-white border-[#184226] ";
+        } else {
+          baseClass += "bg-[#9e2a1f] text-white border-[#731c13] ";
+        }
+
+        if (idx === currentQuestionIndex) {
+          baseClass += "ring-2 ring-[#d4a338] scale-105 shadow-sm font-black ";
+        }
+
+        dot.className = baseClass;
+        dot.onclick = () => {
+          currentQuestionIndex = idx;
+          renderQuestion();
+        };
+        questionDots.appendChild(dot);
+      });
+    }
+
+    function renderQuestion() {
+      const q = questions[currentQuestionIndex];
+      const selectedIdx = userAnswers[currentQuestionIndex];
+      const isAnswered = selectedIdx !== null;
+      const answeredCount = userAnswers.filter(a => a !== null).length;
+
+      questionCounter.textContent = `Запитання ${currentQuestionIndex + 1} з ${questions.length}`;
+      answeredCounter.textContent = `Відповідей: ${answeredCount} / ${questions.length}`;
+      progressBar.style.width = `${((currentQuestionIndex + 1) / questions.length) * 100}%`;
+
+      questionType.textContent = q.type;
+      questionText.textContent = q.question;
+
+      renderNavigationDots();
+
+      // Керування кнопками Назад / Далі / Завершити
+      prevBtn.disabled = currentQuestionIndex === 0;
+
+      if (currentQuestionIndex === questions.length - 1) {
+        nextBtnText.textContent = "Завершити тест";
+        nextBtnIcon.className = "fa-solid fa-flag-checkered text-[#f2c45a]";
+        finishEarlyBtn.classList.add("hidden");
+      } else {
+        nextBtnText.textContent = "Наступне";
+        nextBtnIcon.className = "fa-solid fa-arrow-right text-[#f2c45a]";
+        if (answeredCount === questions.length) {
+          finishEarlyBtn.classList.remove("hidden");
+        } else {
+          finishEarlyBtn.classList.add("hidden");
+        }
+      }
+
+      // Варіанти відповідей
+      optionsContainer.innerHTML = "";
+      q.options.forEach((opt, idx) => {
+        const btn = document.createElement("button");
+        let btnClass = "w-full text-left p-4 rounded-xl border-2 font-semibold text-sm transition-all duration-150 flex items-start gap-3 ";
+        let badgeClass = "inline-flex items-center justify-center w-6 h-6 rounded-md font-extrabold text-xs shrink-0 mt-0.5 ";
+
+        if (!isAnswered) {
+          btnClass += "border-[#d8c39b] hover:border-[#7c2219] bg-[#fcf8ef] hover:bg-white text-[#2b1d14] cursor-pointer shadow-sm";
+          badgeClass += "bg-[#ebd9b5] text-[#5c3618]";
+        } else {
+          btn.disabled = true;
+          if (idx === q.correct) {
+            btnClass += "bg-[#e3f1e6] border-[#235c36] text-[#163b22]";
+            badgeClass += "bg-[#235c36] text-white";
+          } else if (idx === selectedIdx) {
+            btnClass += "bg-[#fae8e6] border-[#9e2a1f] text-[#731c13]";
+            badgeClass += "bg-[#9e2a1f] text-white";
+          } else {
+            btnClass += "bg-[#f8f2e4] border-[#e2d3b5] text-[#6e5a47] opacity-65";
+            badgeClass += "bg-[#e5d6b8] text-[#6e5a47]";
+          }
+        }
+
+        btn.className = btnClass;
+        btn.innerHTML = `<span class="${badgeClass}">${['А', 'Б', 'В', 'Г'][idx]}</span><span class="leading-relaxed">${opt}</span>`;
+        
+        if (!isAnswered) {
+          btn.onclick = () => selectOption(idx);
+        }
+        optionsContainer.appendChild(btn);
+      });
+
+      // Пояснення (якщо на це питання вже давали відповідь)
+      if (isAnswered) {
+        feedbackBox.classList.remove("hidden");
+        if (selectedIdx === q.correct) {
+          feedbackBox.className = "p-4 rounded-2xl mb-6 border-2 bg-[#ebf6ee] border-[#7ab88d] transition-all";
+          feedbackTitle.textContent = "Правильно!";
+          feedbackTitle.className = "font-extrabold text-sm uppercase tracking-wide text-[#1e522f]";
+          feedbackIcon.className = "fa-solid fa-circle-check text-lg text-[#235c36]";
+        } else {
+          feedbackBox.className = "p-4 rounded-2xl mb-6 border-2 bg-[#fcf0ee] border-[#db8a81] transition-all";
+          feedbackTitle.textContent = "Неправильно!";
+          feedbackTitle.className = "font-extrabold text-sm uppercase tracking-wide text-[#8c2318]";
+          feedbackIcon.className = "fa-solid fa-circle-xmark text-lg text-[#9e2a1f]";
+        }
+        feedbackText.textContent = q.explanation;
+      } else {
+        feedbackBox.className = "hidden";
+      }
+    }
+
+    function selectOption(selectedIndex) {
+      if (userAnswers[currentQuestionIndex] !== null) return;
+      userAnswers[currentQuestionIndex] = selectedIndex;
+      renderQuestion();
+    }
+
+    prevBtn.onclick = () => {
+      if (currentQuestionIndex > 0) {
+        currentQuestionIndex--;
+        renderQuestion();
+      }
+    };
+
+    nextBtn.onclick = () => {
+      if (currentQuestionIndex < questions.length - 1) {
+        currentQuestionIndex++;
+        renderQuestion();
+      } else {
+        showResults();
+      }
+    };
+
+    finishEarlyBtn.onclick = showResults;
+
+    function showResults() {
+      navWrapper.classList.add("hidden");
+      quizArea.classList.add("hidden");
+      resultScreen.classList.remove("hidden");
+
+      let correctCount = 0;
+      questions.forEach((q, idx) => {
+        if (userAnswers[idx] === q.correct) correctCount++;
+      });
+
+      const wrongCount = questions.length - correctCount;
+      const percent = Math.round((correctCount / questions.length) * 100);
+
+      statCorrect.textContent = correctCount;
+      statWrong.textContent = wrongCount;
+
+      let verdict = "";
+      if (percent >= 90) verdict = "Княжий рівень! Ти бездоганно володієш матеріалом про культуру та устрій Русі-України.";
+      else if (percent >= 70) verdict = "Гідний результат! Основні поняття, стани та пам'ятки культури засвоєно добре.";
+      else if (percent >= 50) verdict = "Непоганий старт, але переглянь червоні картки нижче, щоб закріпити культурні пам'ятки.";
+      else verdict = "Варто освіжити конспект по Русі-Україні та пройти літопис запитань ще раз!";
+
+      finalScoreText.innerHTML = `Твій результат: <strong class="text-[#7c2219] text-xl">${correctCount} з ${questions.length}</strong> (${percent}%).<br><span class="text-xs sm:text-sm font-medium text-[#5e442f] mt-1 inline-block">${verdict}</span>`;
+
+      // Генеруємо повний розбір усіх 20 запитань
+      reviewList.innerHTML = "";
+      const letters = ['А', 'Б', 'В', 'Г'];
+
+      questions.forEach((q, idx) => {
+        const userAns = userAnswers[idx];
+        const isCorrect = userAns === q.correct;
+        const isSkipped = userAns === null;
+
+        let cardBorder = isCorrect ? "border-[#6eb083] bg-[#f4fbf6]" : "border-[#d9877e] bg-[#fdf5f4]";
+        let statusBadge = isCorrect
+          ? `<span class="bg-[#235c36] text-white text-xs font-extrabold px-2.5 py-1 rounded-md"><i class="fa-solid fa-check mr-1"></i>Правильно</span>`
+          : isSkipped
+            ? `<span class="bg-[#8a6d3b] text-white text-xs font-extrabold px-2.5 py-1 rounded-md"><i class="fa-solid fa-minus mr-1"></i>Без відповіді</span>`
+            : `<span class="bg-[#9e2a1f] text-white text-xs font-extrabold px-2.5 py-1 rounded-md"><i class="fa-solid fa-xmark mr-1"></i>Помилка</span>`;
+
+        // Підсвічуємо варіанти всередині картки розбору
+        let optionsHtml = q.options.map((opt, optIdx) => {
+          let optStyle = "p-2.5 rounded-lg text-xs sm:text-sm flex items-start gap-2 border ";
+          let marker = "";
+
+          if (optIdx === q.correct) {
+            optStyle += "bg-[#dff2e4] border-[#235c36] text-[#143820] font-bold";
+            marker = `<i class="fa-solid fa-circle-check text-[#235c36] mt-0.5 shrink-0"></i>`;
+          } else if (optIdx === userAns && !isCorrect) {
+            optStyle += "bg-[#fadbd8] border-[#9e2a1f] text-[#731c13] font-bold line-through decoration-[#9e2a1f]/60";
+            marker = `<i class="fa-solid fa-circle-xmark text-[#9e2a1f] mt-0.5 shrink-0"></i>`;
+          } else {
+            optStyle += "bg-white/70 border-[#e5d7bc] text-[#5e4c3c]";
+            marker = `<span class="font-extrabold text-xs text-[#8c7355] w-4 text-center shrink-0">${letters[optIdx]}</span>`;
+          }
+
+          return `<div class="${optStyle}">${marker}<span><strong>${letters[optIdx]}.</strong> ${opt}</span></div>`;
+        }).join("");
+
+        const card = document.createElement("div");
+        card.className = `p-4 sm:p-5 rounded-2xl border-2 ${cardBorder} shadow-sm`;
+        card.innerHTML = `
+          <div class="flex flex-wrap items-center justify-between gap-2 mb-2.5">
+            <span class="text-xs font-black uppercase text-[#7c2219] tracking-wide">Питання ${idx + 1} • ${q.type}</span>
+            ${statusBadge}
+          </div>
+          <p class="font-bold text-sm sm:text-base text-[#2b1d14] mb-3 leading-snug">${q.question}</p>
+          <div class="space-y-1.5 mb-3">
+            ${optionsHtml}
+          </div>
+          <div class="bg-[#fbf4e4] border border-[#dfc592] rounded-xl p-3 text-xs sm:text-sm text-[#3d291a] leading-relaxed">
+            <strong class="text-[#7c2219]"><i class="fa-solid fa-scroll mr-1"></i>Розбір:</strong> ${q.explanation}
+          </div>
+        `;
+        reviewList.appendChild(card);
+      });
+
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+
+    function restartQuiz() {
+      userAnswers = new Array(questions.length).fill(null);
+      currentQuestionIndex = 0;
+      resultScreen.classList.add("hidden");
+      navWrapper.classList.remove("hidden");
+      quizArea.classList.remove("hidden");
+      renderQuestion();
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+
+    restartBtn.onclick = restartQuiz;
+
+    // Старт
+    renderQuestion();
+  </script>
+</body>
+</html>
